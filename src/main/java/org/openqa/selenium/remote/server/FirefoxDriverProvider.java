@@ -26,6 +26,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import static java.lang.String.format;
+
 /**
  * This driver provider that instantiates FirefoxDriver.
  */
@@ -75,12 +77,16 @@ public class FirefoxDriverProvider implements DriverProvider {
   }
 
   private WebDriver callConstructor(String driverClassName, Capabilities capabilities) {
+    LOG.info(format("callConstructor(%s, %s)", driverClassName, capabilities.toString()));
     Class<? extends WebDriver> from = getDriverClass(driverClassName);
+    LOG.info(format("from is %s", from.getCanonicalName()));
     try {
       Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);
+      LOG.info(format("constructor is %s; calling constructor.newInstance(%s)", constructor.toString(), capabilities.toString()));
       return constructor.newInstance(capabilities);
     } catch (NoSuchMethodException e) {
       try {
+        LOG.info(format("Handle NoSuchMethodException; calling from.newInstance()"));
         return from.newInstance();
       } catch (InstantiationException | IllegalAccessException e1) {
         throw new WebDriverException(e);

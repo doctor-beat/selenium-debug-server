@@ -40,14 +40,17 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.servlet.Servlet;
 
@@ -179,6 +182,9 @@ public class GridLauncherV3 {
   }
 
   private static void configureLogging(StandaloneConfiguration configuration) {
+    System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tc] %4$s: %2$s - %5$s %6$s%n");
+    System.out.println("Prop: " + System.getProperty("java.util.logging.SimpleFormatter.format"));
+
     Level logLevel =
         configuration.debug
         ? Level.FINE
@@ -201,7 +207,9 @@ public class GridLauncherV3 {
       }
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
-        logFile.setFormatter(new TerseFormatter());
+
+        //logFile.setFormatter(new TerseFormatter());
+        logFile.setFormatter(new SimpleFormatter());
         logFile.setLevel(logLevel);
         Logger.getLogger("").addHandler(logFile);
       } catch (IOException e) {
@@ -211,7 +219,8 @@ public class GridLauncherV3 {
       for (Handler handler : Logger.getLogger("").getHandlers()) {
         if (handler instanceof ConsoleHandler) {
           handler.setLevel(logLevel);
-          handler.setFormatter(new TerseFormatter());
+          //handler.setFormatter(new TerseFormatter());
+          //handler.setFormatter(new SimpleFormatter());
         }
       }
     }

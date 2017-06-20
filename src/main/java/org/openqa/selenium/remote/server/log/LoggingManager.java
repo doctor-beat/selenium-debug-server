@@ -37,7 +37,8 @@ public class LoggingManager {
     final Logger currentLogger;
 
     currentLogger = Logger.getLogger("");
-    overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
+    currentLogger.info("Skip override consolehandler");
+    //overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
     if (debugMode) {
       currentLogger.setLevel(Level.FINE);
     }
